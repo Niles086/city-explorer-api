@@ -1,3 +1,5 @@
+require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
@@ -12,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 // Define a new /weather endpoint
-app.get('/weather', (req, res) => {
+app.get('data/weather.json', (req, res) => {
   const { lat, lon, searchQuery } = req.query;
 
   // Assuming weather.json has an array of cities
