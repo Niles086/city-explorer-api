@@ -3,12 +3,12 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const axios = require('axios');
 const weatherData = require('./data/weather.json');
-const WEATHER_KEY = process.env.WEATHER_API_KEY;
 const app = express();
 
 // Load environment variables from .env file
 dotenv.config();
 
+const WEATHER_KEY = process.env.WEATHER_API_KEY;
 const port = process.env.PORT || 3000;
 app.use(cors());
 
@@ -49,17 +49,19 @@ app.get('/', (req, res) => {
 
 
 // Define a new /weather endpoint
-app.get('/weather', (req, res) => {
-  const { lat, lon, searchQuery } = req.query;
+app.get('/weather', async(req, res) => {
+  const { searchQuery } = req.query;
 
   // Check the weather.json for the matching array of cities
-  const matchingCity = weatherData.find(
-    (city) => city.lat === lat && city.lon === lon && city.city_name === searchQuery
-  );
+  // const matchingCity = weatherData.find(
+  //   (city) => city.city_name.toLowerCase() === searchQuery.toLowerCase()
+  // );
+  const matchingCity = await axios.get(`https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${WEATHER_KEY}`);
+  console.log(matchingCity);
 
   if (matchingCity) {
     // Create an array of Forecast objects for each day
-    const forecasts = matchingCity.data.map((day) => new Forecast(day.valid_date, day.weather.description));
+    const forecasts = matchingCity.data.data.map((day) => new Forecast(day.valid_date, day.weather.description));
 
     // Send the full array of Forecast objects in the response
     res.json(forecasts);
