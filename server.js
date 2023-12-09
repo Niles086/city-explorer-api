@@ -29,23 +29,29 @@ app.get('/', (req, res) => {
 
 
 // Define a new /weather endpoint
-app.get('/weather', async(req, res) => {
+app.get('/weather', async (req, res) => {
+  
   const { searchQuery } = req.query;
+  try {
 
-  const matchingCity = await axios.get(`https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${WEATHER_KEY}`);
-  console.log(matchingCity);
+    const matchingCity = await axios.get(`https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${WEATHER_KEY}`);
+    console.log(matchingCity);
 
-  if (matchingCity) {
-    // Create an array of Forecast objects for each day
-    const forecasts = matchingCity.data.data.map((day) => new Forecast(day.valid_date, day.weather.description));
+    if (matchingCity) {
+      // Create an array of Forecast objects for each day
+      const forecasts = matchingCity.data.data.map((day) => new Forecast(day.valid_date, day.weather.description));
 
-    // Send the full array of Forecast objects in the response
-    res.json(forecasts);
-  } else {
-    res.status(404).json({ error: 'City not found' });
+      // Send the full array of Forecast objects in the response
+      res.json(forecasts);
+    }
   }
-});
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 
+});
+app.get('/movies', getMovies);
 async function getMovies(request, response) {
   const { searchQuery: searchQuery } = request.query;
 
