@@ -1,9 +1,11 @@
-const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const axios = require('axios');
 const weatherData = require('./data/weather.json');
+
+const express = require('express');
+const cors = require('cors');
 const app = express();
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -11,6 +13,9 @@ dotenv.config();
 const WEATHER_KEY = process.env.WEATHER_API_KEY;
 const MOVIE_KEY = process.env.MOVIE_API_KEY;
 const port = process.env.PORT || 3000;
+
+
+
 app.use(cors());
 
 
